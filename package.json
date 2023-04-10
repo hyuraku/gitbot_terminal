@@ -1,0 +1,50 @@
+{
+  "name": "gitbot_terminal",
+  "version": "1.0.0",
+  "description": "Build a GitHub repository chatbot for your terminal",
+  "type": "module",
+  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --declaration --outDir dist/",
+    "start": "tsx -r dotenv/config src/index.ts",
+    "start:dist": "yarn build && node -r dotenv/config dist/index.js",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write \"**/*.ts\"",
+    "format:check": "prettier --list-different \"**/*.ts\""
+  },
+  "keywords": [
+    "langchain",
+    "github",
+    "node",
+    "typescript",
+    "llm",
+    "chatbot",
+    "terminal"
+  ],
+  "author": "hyuraku",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "hnswlib-node": "^1.4.2",
+    "langchain": "^0.0.51"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.2",
+    "@types/js-yaml": "^4.0.5",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.38.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.7",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.4"
+  }
+}
