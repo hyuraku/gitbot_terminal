@@ -7,7 +7,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HNSWLib } from "langchain/vectorstores";
 import { OpenAIEmbeddings } from "langchain/embeddings";
 import readline from "readline";
-import fs from "fs";
+import { readdirSync, existsSync, mkdirSync } from "fs";
 
 dotenv.config();
 
@@ -21,6 +21,7 @@ const githubstore = async (directory: string, github_url: string) => {
 
   const splitter1 = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
+    chunkOverlap: 200
   });
   const docOutput = await splitter1.splitDocuments(docs);
   const vectorStore = await HNSWLib.fromDocuments(
@@ -35,7 +36,7 @@ const checkFilesExistInFolder = (
   folderPath: string,
   fileNames: string[]
 ): boolean => {
-  const files = fs.readdirSync(folderPath);
+  const files = readdirSync(folderPath);
 
   for (const fileName of fileNames) {
     if (!files.includes(fileName)) {
@@ -52,8 +53,8 @@ const run = async () => {
   const directory = githubUrl
     .replace(/^https:\/\/github.com\//, "")
     .replace("/", "-");
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory, { recursive: true });
+  if (!existsSync(directory)) {
+    mkdirSync(directory, { recursive: true });
   }
   if (!checkFilesExistInFolder(directory, fileNames)) {
     console.log("Not all files exist in the folder");
@@ -83,7 +84,7 @@ const run = async () => {
   });
 
   let chatHistory = "";
-  console.log("ask anything");
+  console.log("bot) ask anything");
   read1.on("line", async (input) => {
     const question = input;
 
@@ -91,10 +92,10 @@ const run = async () => {
       question,
       chat_history: chatHistory,
     });
-    console.log(res);
+    console.log(`bot) ${res.text}`);
     chatHistory += question + res.text;
     read1.prompt();
   });
 };
 
-run()
+run();
