@@ -21,7 +21,7 @@ const githubstore = async (directory: string, github_url: string) => {
 
   const splitter1 = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
-    chunkOverlap: 200
+    chunkOverlap: 0
   });
   const docOutput = await splitter1.splitDocuments(docs);
   const vectorStore = await HNSWLib.fromDocuments(
@@ -53,6 +53,7 @@ const run = async () => {
   const directory = githubUrl
     .replace(/^https:\/\/github.com\//, "")
     .replace("/", "-");
+  const reponame = directory.substring(directory.lastIndexOf("-") + 1);
   if (!existsSync(directory)) {
     mkdirSync(directory, { recursive: true });
   }
@@ -72,9 +73,22 @@ const run = async () => {
     new OpenAIEmbeddings()
   );
 
+  const botTemplate = `
+  You understand the content of ${reponame} and provide clear answers for engineers.
+  Use the following pieces of context to answer the question at the end. 
+  If you don't know the answer, just say that you don't know, don't try to make up an answer.
+
+  {context}
+
+  Question: {question}
+  Helpful Answer:`;
+
   const chain = ConversationalRetrievalQAChain.fromLLM(
     model,
-    loadedVectorStore.asRetriever()
+    loadedVectorStore.asRetriever(),
+    {
+      qaTemplate: botTemplate
+    }
   );
 
   // To receive input from the user
