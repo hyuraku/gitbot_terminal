@@ -1,11 +1,11 @@
 import * as dotenv from "dotenv";
 
 import { ConversationalRetrievalQAChain } from "langchain/chains";
-import { OpenAIChat } from "langchain/llms";
-import { GithubRepoLoader } from "langchain/document_loaders";
+import { OpenAIChat } from "langchain/llms/openai";
+import { GithubRepoLoader } from "langchain/document_loaders/web/github";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HNSWLib } from "langchain/vectorstores";
-import { OpenAIEmbeddings } from "langchain/embeddings";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import readline from "readline";
 import { readdirSync, existsSync, mkdirSync } from "fs";
 
@@ -16,6 +16,7 @@ const githubstore = async (directory: string, github_url: string) => {
     branch: "main",
     recursive: false,
     unknown: "warn",
+    ignorePaths: ["*.md"] 
   });
   const docs = await loader.load();
 
